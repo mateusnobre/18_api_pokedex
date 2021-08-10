@@ -17,6 +17,9 @@ export async function postSession (userData: userData) {
     throw Error("Authentication Error");
 
   const session = await getRepository(Session).findOne({ userId: user.id });
+  if (session){
+  
+  }
 
   await getRepository(Session).insert(session);
 

@@ -11,7 +11,7 @@ export async function createUser () {
   return user;
 }
 
-export async function createValidUserBody(){
+export async function createValidSignUpBody(){
   const password = faker.internet.password()  
   const user = {
     email: faker.internet.email(),
@@ -21,8 +21,7 @@ export async function createValidUserBody(){
   return user
 }
 
-
-export async function createUnmatchedPasswordsUserBody(){
+export async function createUnmatchedPasswordsSignUpBody(){
   const password = faker.internet.password()  
   const user = {
     email: faker.internet.email(),
@@ -32,12 +31,21 @@ export async function createUnmatchedPasswordsUserBody(){
   return user
 }
 
-export async function createInvalidEmailUserBody(){
+export async function createInvalidEmailSignUpBody(){
   const password = faker.internet.password()  
   const user = {
     email: "somerandomemail",
     password: password,
     confirmPassword: password
+  }
+  return user
+}
+
+export async function createInvalidEmailSignInBody(){
+  const password = faker.internet.password()  
+  const user = {
+    email: "somerandomemail",
+    password: password,
   }
   return user
 }

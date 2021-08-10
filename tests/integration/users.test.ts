@@ -23,13 +23,9 @@ describe("GET /users", () => {
 
     const response = await supertest(app).get("/users");
     
-    expect(response.body).toEqual(
-      expect.arrayContaining([
-        expect.objectContaining({
-          email: user.email
-        })
-      ])
-    );
+    expect.objectContaining({
+      token: expect.any(String)
+    })
 
     expect(response.status).toBe(200);
   });
