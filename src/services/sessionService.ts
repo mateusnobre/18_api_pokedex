@@ -27,7 +27,6 @@ export async function signIn (userData: userData) {
     else {
       const session = {userId: user.id, token: uuid().toString()}
       await getRepository(Session).insert(session);
-      console.log(session.token)
       return {status: 200, token: session.token};
     }
   }

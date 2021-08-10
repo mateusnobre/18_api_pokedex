@@ -2,7 +2,7 @@ import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm";
 import UserPokemon from "./UserPokemon";
 
 @Entity("pokemons")
-export default class Session {
+export default class Pokemon {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -19,16 +19,13 @@ export default class Session {
   weight: number;
   
   @Column()
-  height: string;
+  height: number;
   
   @Column()
   baseExp: number;
 
   @Column()
   description: string;
-
-  @Column()
-  userPokemonId: number;
   
   @OneToMany(() => UserPokemon, user_pokemon => user_pokemon.pokemon)
   user_pokemons: UserPokemon[]

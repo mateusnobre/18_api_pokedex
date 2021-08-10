@@ -12,7 +12,7 @@ export default class UserPokemon {
   userId: number;
 
   @Column()
-  pokemonId: Number;
+  pokemonId: number;
 
   @ManyToOne(() => User, user => user.user_pokemons)
   user: User
