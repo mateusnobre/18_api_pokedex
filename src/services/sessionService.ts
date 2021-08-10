@@ -31,15 +31,3 @@ export async function signIn (userData: userData) {
     }
   }
 }
-
-async function verifyToken(req: Request, res : Response) {
-  const authorization = req.headers["authorization"];
-  const token = authorization.split("Bearer ")[1];
-
-  const repository = getRepository(Session);
-  const session = await repository.findOne({ token });
-
-  if (!session) {
-    return res.sendStatus(401);
-  }
-}

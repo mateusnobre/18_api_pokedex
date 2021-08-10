@@ -5,13 +5,15 @@ import { getConnection } from "typeorm";
 import app, { init } from "../../src/app";
 import { createPokemon } from "../factories/pokemonFactory";
 import { createUser } from "../factories/userFactory"
-import { clearPokemons } from "../utils/database";
+import { clearPokemons, clearSessions, clearUsers } from "../utils/database";
 
 beforeAll(async () => {
   await init();
 });
 
 beforeEach(async () => {
+  await clearSessions();
+  await clearUsers();
   await clearPokemons();
 });
 
@@ -22,17 +24,17 @@ afterAll(async () => {
 describe("get /pokemons", () => {
   it("returns 200 for valid token", async () => {
     const user = await createUser();
-    const login = await supertest(app).get("/sign-in").send(user)
+    const login = await supertest(app).post("/sign-in").send(user)
     const token = login.body.token;
-    const header = {Authorization: `Bearer ${token}`}
-    for (let i = 0; i < 10; i++){
-        await createPokemon()
-    }
-    const result = await supertest(app).get("/pokemons").set(header);
+    const bearerToken = `Bearer ${token}`
+    const pokemon1 = await createPokemon()
+    const pokemon2 = await createPokemon()
+    const result = await supertest(app).get("/pokemons").set('authorization', bearerToken);
+    console.log("sai2")
     const status = result.status;
     const pokemons = result.body
     expect(status).toEqual(200);
-    expect(pokemons).toHaveLength(10)
+    expect(pokemons).toHaveLength(2)
     expect(pokemons).toEqual(
      expect.arrayContaining([
       expect.objectContaining({
@@ -54,8 +56,6 @@ describe("get /pokemons", () => {
     const header = {Authorization: `Bearer ${token}`}
     const result = await supertest(app).get("/pokemons").set(header);
     const status = result.status;
-    const pokemons = result.body
     expect(status).toEqual(401);
-    expect(pokemons).toHaveLength(0)
-});
+  });
 });
