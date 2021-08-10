@@ -10,7 +10,7 @@ export default class Session {
   token: string;
 
   @Column()
-  password: string;
+  userId: number;
   
   @ManyToOne(() => User, user => user.sessions)
   user: User
