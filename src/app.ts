@@ -8,15 +8,13 @@ import connectDatabase from "./database";
 
 import * as userController from "./controllers/userController";
 import * as sessionController from "./controllers/sessionController";
-import * as pokemonController from "./controllers/pokemonController";
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-app.post("/sign-up", userController.postUser)
-
-app.post("/sign-in", );
+app.post("/sign-up", userController.signUp)
+app.post("/sign-in", sessionController.signIn);
 
 
 export async function init () {

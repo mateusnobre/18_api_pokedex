@@ -36,7 +36,7 @@ describe("POST /sign-in", () => {
     const invalidPasswordResult = await supertest(app)
       .post("/sign-in")
       .send(user);
-    expect(invalidPasswordResult).toEqual(401);
+    expect(invalidPasswordResult.status).toEqual(401);
   });
 
   it("returns 400 for request with invalid email", async () => {
@@ -51,6 +51,6 @@ describe("POST /sign-in", () => {
     const inexistentEmailResult = await supertest(app)
       .post("/sign-in")
       .send(user);
-    expect(inexistentEmailResult).toEqual(400);
+    expect(inexistentEmailResult.status).toEqual(400);
   });
 });

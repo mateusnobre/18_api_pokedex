@@ -1,14 +1,18 @@
 import { getRepository } from "typeorm";
 import faker from 'faker'
+import bcrypt, { hashSync } from 'bcrypt'
 import User from "../../src/entities/User";
 
 export async function createUser () {
+  const email = faker.internet.email()
+  const password = faker.internet.password()
+  const hashedPassword = await hashSync(password, 10)
   const user = await getRepository(User).create({
-    email: faker.internet.email(),
-    password: faker.internet.password()
+    email: email,
+    password: hashedPassword
   });
   await getRepository(User).save(user);
-  return user;
+  return {email: email, password: password};
 }
 
 export async function createValidSignUpBody(){

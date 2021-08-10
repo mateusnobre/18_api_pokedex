@@ -1,6 +1,7 @@
-
+import {Request, Response} from 'express';
 import { getRepository } from "typeorm";
 import bcrypt from "bcrypt";
+import {v4 as uuid} from 'uuid'
 import Session from "../entities/Session";
 import User from "../entities/User"
 
@@ -9,60 +10,30 @@ interface userData {
   password: string;
 }
 
-export async function postSession (userData: userData) {
+export async function signIn (userData: userData) {
   let { email, password } = userData;
 
   const user = await getRepository(User).findOne({email: email});
-  if (!user || !(await bcrypt.compare(password, user.password)))
-    throw Error("Authentication Error");
-
-  const session = await getRepository(Session).findOne({ userId: user.id });
-  if (session){
-  
+  if (!user){
+    return {status: 400, token: ""}
   }
-
-  await getRepository(Session).insert(session);
-
+  else if (!(await bcrypt.compare(password, user.password))){
+    return {status: 401, token: ""}  
+  }
+  else {  
+    const session = await getRepository(Session).findOne({ userId: user.id });
+    if (session){
+      return {status: 200, token: session.token};
+    }
+    else {
+      const session = {userId: user.id, token: uuid().toString()}
+      await getRepository(Session).insert(session);
+      return {status: 200, token: session.token};
+    }
+  }
 }
 
-
-    if (!user || !(await bcrypt.compare(password, user.password)))
-      throw Error("Authentication Error");
-
-    let sessionQuery = await connection.query(
-      `SELECT *
-       FROM sessions
-       WHERE user_id = $1`,
-      [user.id]
-    );
-
-    if (!sessionQuery.rowCount) {
-      let date = new Date();
-
-      sessionQuery = await connection.query(
-        `INSERT INTO
-        sessions (user_id, created_at)
-        VALUES
-        ($1, $2)
-        RETURNING id`,
-        [user.id, date]
-      );
-    }
-
-    const privateKey = process.env.JWT_SECRET;
-    const config = { expiresIn: 60 * 60 * 24 * 7 }; // expires in 1 week
-
-    const token = jwt.sign({ id: sessionQuery.rows[0].id }, privateKey, config);
-
-    const userResponse = { username: user.name, email: user.email };
-
-    return res.status(200).send({ user: userResponse, token });
-  } catch (error) {
-    if (error.message === "Authentication Error") return res.sendStatus(401);
-    return res.status(400).send(error);
-  }
-
-async function verifyToken(req, res) {
+async function verifyToken(req: Request, res : Response) {
   const authorization = req.headers["authorization"];
   const token = authorization.split("Bearer ")[1];
 

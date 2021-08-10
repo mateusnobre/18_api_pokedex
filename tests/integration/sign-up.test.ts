@@ -19,14 +19,14 @@ afterAll(async () => {
 
 describe("POST /sign-up", () => {
   it("returns 201 for valid params", async () => {
-    const body = createValidSignUpBody()
+    const body = await createValidSignUpBody()
     const result = await supertest(app).post("/sign-up").send(body);
     const status = result.status;
     expect(status).toEqual(201);
   });
 
   it("returns 409 for duplicate emails", async () => {
-    const body = createValidSignUpBody()
+    const body = await createValidSignUpBody()
     const result1 = await supertest(app).post("/sign-up").send(body);
     expect(result1.status).toEqual(201);
     const result2 = await supertest(app).post("/sign-up").send(body);
@@ -34,7 +34,7 @@ describe("POST /sign-up", () => {
   });
 
   it("returns 400 for request invalid e-mail", async () => {
-    const invalidEmailBody = createInvalidEmailSignUpBody()
+    const invalidEmailBody = await createInvalidEmailSignUpBody()
     const invalidEmailResult = await supertest(app)
       .post("/sign-up")
       .send(invalidEmailBody);
@@ -42,10 +42,10 @@ describe("POST /sign-up", () => {
   });
   
   it("returns 400 for request with unmatched passwords", async () => {
-    const invalidEmailBody = createUnmatchedPasswordsSignUpBody()
-    const invalidEmailResult = await supertest(app)
+    const unmatchedPasswordsBody = await createUnmatchedPasswordsSignUpBody()
+    const unmatchedPasswordsResult = await supertest(app)
       .post("/sign-up")
-      .send(invalidEmailBody);
-    expect(invalidEmailResult.status).toEqual(400);
+      .send(unmatchedPasswordsBody);
+    expect(unmatchedPasswordsResult.status).toEqual(400);
   });
 });
