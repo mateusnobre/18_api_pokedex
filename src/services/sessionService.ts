@@ -1,6 +1,6 @@
 import {Request, Response} from 'express';
 import { getRepository } from "typeorm";
-import bcrypt from "bcrypt";
+import bcrypt, { compareSync } from "bcrypt";
 import {v4 as uuid} from 'uuid'
 import Session from "../entities/Session";
 import User from "../entities/User"
@@ -12,7 +12,6 @@ interface userData {
 
 export async function signIn (userData: userData) {
   let { email, password } = userData;
-
   const user = await getRepository(User).findOne({email: email});
   if (!user){
     return {status: 400, token: ""}
@@ -28,6 +27,7 @@ export async function signIn (userData: userData) {
     else {
       const session = {userId: user.id, token: uuid().toString()}
       await getRepository(Session).insert(session);
+      console.log(session.token)
       return {status: 200, token: session.token};
     }
   }

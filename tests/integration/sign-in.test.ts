@@ -3,14 +3,15 @@ import { getConnection } from "typeorm";
 
 import app, { init } from "../../src/app";
 import { createInvalidEmailSignInBody, createUser} from "../factories/userFactory";
-import { clearDatabase } from "../utils/database";
+import { clearSessions, clearUsers } from "../utils/database";
 
 beforeAll(async () => {
   await init();
 });
 
 beforeEach(async () => {
-  await clearDatabase();
+  await clearSessions();
+  await clearUsers();
 });
 
 afterAll(async () => {
@@ -18,8 +19,8 @@ afterAll(async () => {
 });
 describe("POST /sign-in", () => {
   it("returns 200 for valid params", async () => {
-    const user = createUser();
-    const result = await supertest(app).post("/sign-up").send(user);
+    const user = await createUser();
+    const result = await supertest(app).post("/sign-in").send(user);
     const status = result.status;
     expect(status).toEqual(200);
     

@@ -3,14 +3,15 @@ import { getConnection } from "typeorm";
 
 import app, { init } from "../../src/app";
 import { createValidSignUpBody, createInvalidEmailSignUpBody, createUnmatchedPasswordsSignUpBody} from "../factories/userFactory";
-import { clearDatabase } from "../utils/database";
+import { clearUsers, clearSessions } from "../utils/database";
 
 beforeAll(async () => {
   await init();
 });
 
 beforeEach(async () => {
-  await clearDatabase();
+  await clearSessions();
+  await clearUsers();
 });
 
 afterAll(async () => {
