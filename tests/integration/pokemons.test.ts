@@ -1,4 +1,3 @@
-
 import supertest from "supertest";
 import { getConnection } from "typeorm";
 
@@ -30,7 +29,6 @@ describe("get /pokemons", () => {
     const pokemon1 = await createPokemon()
     const pokemon2 = await createPokemon()
     const result = await supertest(app).get("/pokemons").set('authorization', bearerToken);
-    console.log("sai2")
     const status = result.status;
     const pokemons = result.body
     expect(status).toEqual(200);
@@ -53,8 +51,8 @@ describe("get /pokemons", () => {
   });
   it("returns 401 for invalid token", async () => {
     const token = "some random token";
-    const header = {Authorization: `Bearer ${token}`}
-    const result = await supertest(app).get("/pokemons").set(header);
+    const bearerToken = `Bearer ${token}`
+    const result = await supertest(app).get("/pokemons").set('authorization', bearerToken);
     const status = result.status;
     expect(status).toEqual(401);
   });

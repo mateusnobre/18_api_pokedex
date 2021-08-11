@@ -8,6 +8,7 @@ import connectDatabase from "./database";
 import * as userController from "./controllers/userController";
 import * as sessionController from "./controllers/sessionController";
 import * as pokemonController from "./controllers/pokemonController";
+import * as userPokemonController from './controllers/usersPokemonsController'
 import Session from "./entities/Session";
 import { getRepository } from "typeorm";
 
@@ -18,6 +19,9 @@ app.use(express.json());
 app.post("/sign-up", userController.signUp)
 app.post("/sign-in", sessionController.signIn);
 app.get("/pokemons", verifyToken, pokemonController.getPokemons)
+app.post("/my-pokemons/:pokemonId/add", verifyToken, userPokemonController.addUserPokemon)
+app.post("/my-pokemons/:pokemonId/remove", verifyToken, userPokemonController.removeUserPokemon)
+
 
 export async function init () {
   await connectDatabase();

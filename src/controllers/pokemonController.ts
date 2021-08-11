@@ -4,8 +4,9 @@ import * as pokemonService from "../services/pokemonService";
 
 export async function getPokemons (req: Request, res: Response) {
   try {
-    console.log("começo")
-    const {status, data} = await pokemonService.getPokemons(req.body);
+    const authorization = req.headers["authorization"];
+    const token = authorization.split("Bearer ")[1];
+    const {status, data} = await pokemonService.getPokemons(token);
     res.status(status).send(data)
   } catch (err) {
     console.error(err);
